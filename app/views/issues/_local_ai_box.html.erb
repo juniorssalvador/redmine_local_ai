@@ -1,0 +1,48 @@
+<hr />
+<div id="local-ai-section" style="margin-top: 15px; padding: 10px; background: #f9f9f9; border: 1px solid #e4e4e4; border-radius: 4px;">
+  <h4 style="margin-top: 0;"><%= l(:label_local_ai_assistant) || "Assistente de IA Local" %></h4>
+
+  <!-- Botão que dispara a requisição AJAX -->
+  <button type="button" id="btn-ai-summarize" class="button" data-issue-id="<%= issue.id %>">
+    🤖 Resumir Histórico com IA
+  </button>
+
+  <!-- Caixa de carregamento (oculta por padrão) -->
+  <div id="ai-loading" style="display: none; margin-top: 10px; color: #666;">
+    <span class="spinner" style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Analisando histórico local...
+  </div>
+
+  <!-- Container onde o resultado da IA será injetado -->
+  <div id="ai-result" style="display: none; margin-top: 15px; padding: 10px; background: #fff; border-left: 4px solid #169c7e; font-size: 13px; line-height: 1.5;">
+  </div>
+</div>
+
+<!-- JavaScript (JQuery nativo do Redmine) para gerenciar o clique -->
+<script>
+    $(document).ready(function() {
+        $('#btn-ai-summarize').not('.initialized').addClass('initialized').click(function() {
+            var issueId = $(this).data('issue-id');
+
+            $('#ai-result').hide().html('');
+            $('#ai-loading').show();
+
+            // Faz uma chamada AJAX para o controller do seu plugin
+            $.ajax({
+                url: '/local_ai/summarize',
+                type: 'POST',
+                data: {
+                    issue_id: issueId,
+                    authenticity_token: $('meta[name=csrf-token]').attr('content') // Proteção contra CSRF do Rails
+                },
+                success: function(response) {
+                    $('#ai-loading').hide();
+                    $('#ai-result').html(response.summary).fadeIn();x
+                },
+                error: function() {
+                    $('#ai-loading').hide();
+                    $('#ai-result').html('<span style="color: red;">Erro ao conectar com o servidor de IA local.</span>').fadeIn();
+                }
+            });
+        });
+    });
+</script>
