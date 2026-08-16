@@ -17,6 +17,33 @@
   </div>
 </div>
 
+
+<div id="local-ai-search-section" style="margin-top: 20px; padding: 15px; background: #fcfcfc; border: 1px solid #e0e0e0; border-radius: 4px;">
+  <!-- Título Internacionalizado -->
+  <h4 style="margin-top: 0; color: #444;">
+    🤖 <%= l(:label_local_ai_assistant) || "Assistente de IA Local" %>
+  </h4>
+
+  <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
+    Casos semelhantes identificados por contexto no histórico local:
+  </p>
+
+  <!-- Container de Carregamento (Spinner) -->
+  <div id="ai-search-loading" style="margin: 10px 0; color: #777; font-size: 13px;">
+    <span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span>
+    Calculando distância semântica na rede local...
+  </div>
+
+  <!-- Lista onde o AJAX vai injetar os resultados encontrados -->
+  <ul id="ai-search-results" style="display: none; padding-left: 20px; margin-top: 10px; line-height: 1.6;">
+  </ul>
+</div>
+
+<!-- Estilo simples para animar a ampulheta se quiser -->
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
 <!-- JavaScript (JQuery nativo do Redmine) para gerenciar o clique -->
 <script>
     $(document).ready(function() {
@@ -44,5 +71,39 @@
                 }
             });
         });
+    });
+
+    $(document).ready(function() {
+        // Captura o ID da tarefa atual diretamente da URL do Redmine (/issues/XXXX)
+        var currentUrl = window.location.pathname;
+        var issueId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+
+        // Evita disparar se não for um ID numérico válido
+        if ($.isNumeric(issueId)) {
+            $.ajax({
+                url: '/local_ai/similar/' + issueId,
+                type: 'GET',
+                dataType: 'html', // Espera receber o fragmento de <li> pronto do controller
+                beforeSend: function(xhr) {
+                    // Injeta o token de segurança CSRF nos cabeçalhos da requisição
+                    var token = $('meta[name=csrf-token]').attr('content');
+                    if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+                },
+                success: function(htmlResponse) {
+                    // Oculta o carregando, injeta o HTML e exibe os resultados com efeito visual
+                    $('#ai-search-loading').hide();
+                    $('#ai-search-results').html(htmlResponse).fadeIn(400);
+                },
+                error: function(xhr, status, error) {
+                    $('#ai-search-loading').hide();
+                    $('#ai-search-results').html(
+                        '<li style="color: #c0392b;">Erro ao processar busca semântica no servidor local.</li>'
+                    ).fadeIn();
+                    console.error("Erro no Plugin Local AI:", error);
+                }
+            });
+        } else {
+            $('#ai-search-loading').hide();
+        }
     });
 </script>

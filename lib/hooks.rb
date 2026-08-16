@@ -1,6 +1,3 @@
-=begin
-module RedmineLocalAi
-=end
 class Hooks < Redmine::Hook::ViewListener
   # Este método deve ter exatamente o mesmo nome do hook do Redmine
   def view_issues_show_description_bottom(context = {})
@@ -14,7 +11,3 @@ class Hooks < Redmine::Hook::ViewListener
     })
   end
 end
-
-=begin
-end
-=end
