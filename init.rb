@@ -9,6 +9,11 @@ Redmine::Plugin.register :redmine_local_ai do
   url 'https://github.com/juniorssalvador/redmine_local_ai'
   author_url 'https://github.com/juniorssalvador/redmine_local_ai'
 
+  project_module :local_ai_assistant do
+    # Define a permissão pública ou restrita para a busca semântica
+    permission :view_similar_issues, { :local_ai => [:similar] }, :public => false
+  end
+
 end
 
 # Preparando o patch para o modelo Issue

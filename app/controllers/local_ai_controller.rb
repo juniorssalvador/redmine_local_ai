@@ -1,5 +1,7 @@
 class LocalAiController < ApplicationController
   before_action :find_issue
+  before_action :find_project
+  before_action :authorize
 
   def summarize
     parameters = YAML.load_file(File.expand_path(File.dirname(__FILE__) + "../../../parameters.yaml"))
@@ -110,6 +112,11 @@ class LocalAiController < ApplicationController
     else
       render html: "<li>Nenhuma tarefa semelhante encontrada no histórico.</li>".html_safe
     end
+  end
+
+  def find_project
+    # O método :authorize do Redmine exige que a variável @project esteja definida
+    @project = @issue.project
   end
 
 end
