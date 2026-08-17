@@ -1,3 +1,12 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  label_local_ai_assistant: "Local AI Assistant"
+  label_btn_ai: "Summarize local history"
+
+
+  msg_i_semelhante_case: "Similar cases identified by context in local history:"
+  msg_i_calculating_distance: "Calculating semantic distance on the local network..."
+
+  msg_e_connection_error: "Error connecting to the local AI server."
+  msg_e_process_semantic_search: "Error processing semantic search on the local server."
+  msg_e_erro_plugin: "Local AI Plugin error"

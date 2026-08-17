@@ -4,13 +4,12 @@
 
   <!-- Botão que dispara a requisição AJAX -->
   <button type="button" id="btn-ai-summarize" class="button" data-issue-id="<%= issue.id %>">
-    🤖 Resumir Histórico com IA
+    🤖 <%= l(:label_btn_ai) %>
   </button>
 
   <!-- Caixa de carregamento (oculta por padrão) -->
   <div id="ai-loading" style="display: none; margin-top: 10px; color: #666;">
-    <span class="spinner" style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> Analisando
-    histórico local...
+    <span class="spinner" style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> <%= l(:msg_i_analysing_local_history) %>
   </div>
 
   <!-- Container onde o resultado da IA será injetado -->
@@ -27,13 +26,13 @@
     </h4>
 
     <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
-      Casos semelhantes identificados por contexto no histórico local:
+      <%= l(:msg_i_semelhante_case) %>
     </p>
 
     <!-- Container de Carregamento (Spinner) -->
     <div id="ai-search-loading" style="margin: 10px 0; color: #777; font-size: 13px;">
       <span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span>
-      Calculando distância semântica na rede local...
+      <%= l(:msg_calculating_distance) %>
     </div>
 
     <!-- Lista onde o AJAX vai injetar os resultados encontrados -->
@@ -76,7 +75,7 @@
                 },
                 error: function () {
                     $('#ai-loading').hide();
-                    $('#ai-result').html('<span style="color: red;">Erro ao conectar com o servidor de IA local.</span>').fadeIn();
+                    $('#ai-result').html('<span style="color: red;"><%= l(:msg_e_connection_error)%> </span>').fadeIn();
                 }
             });
         });
@@ -106,9 +105,9 @@
                 error: function (xhr, status, error) {
                     $('#ai-search-loading').hide();
                     $('#ai-search-results').html(
-                        '<li style="color: #c0392b;">Erro ao processar busca semântica no servidor local.</li>'
+                        '<li style="color: #c0392b;"><%= l(:msg_e_process_semantic_search) %></li>'
                     ).fadeIn();
-                    console.error("Erro no Plugin Local AI:", error);
+                    console.error("<%= l(:msg_e_erro_plugin) %>", error);
                 }
             });
         } else {

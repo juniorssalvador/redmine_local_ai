@@ -11,7 +11,7 @@ Redmine::Plugin.register :redmine_local_ai do
 
   project_module :local_ai_assistant do
     # Define a permissão pública ou restrita para a busca semântica
-    permission :view_similar_issues, { :local_ai => [:similar] }, :public => false
+    permission :view_similar_issues, { :local_ai_similar => [:similar] }, :public => false
   end
 
 end

@@ -1,2 +1,12 @@
 pt-BR:
   label_local_ai_assistant: "Assistente de IA Local"
+  label_btn_ai: "Resumir histórico local"
+
+
+  msg_i_semelhante_case: "Casos semelhantes identificados por contexto no histórico local:"
+  msg_i_calculating_distance: "Calculando distância semântica na rede local..."
+  msg_i_analysing_local_history: "Analisando histórico local"
+
+  msg_e_connection_error: "Erro ao conectar com o servidor de IA local."
+  msg_e_process_semantic_search: "Erro ao processar busca semântica no servidor local."
+  msg_e_erro_plugin: "Erro no Plugin Local AI"
