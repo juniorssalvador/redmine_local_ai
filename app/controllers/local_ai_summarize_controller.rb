@@ -2,6 +2,11 @@ class LocalAiSummarizeController < ApplicationController
   before_action :find_issue
 
   def summarize
+
+    plugin_settings = Setting.plugin_redmine_local_ai || {}
+    ollama_url = plugin_settings['ollama_url'].presence || 'http://127.0.0.1:11434'
+    llm_model = plugin_settings['llm_model'].presence || 'nomic-embed-text'
+
     parameters = YAML.load_file(File.expand_path(File.dirname(__FILE__) + "../../../parameters.yaml"))
     # 1. Coleta a descrição da tarefa
     text_to_analyze = "Descrição: #{@issue.description}\n"
@@ -15,12 +20,12 @@ class LocalAiSummarizeController < ApplicationController
 
     # 3. Faz a requisição HTTP para a máquina do Ollama na sua rede local
     # Altere o IP abaixo para o IP real da sua máquina com Ollama
-    uri = URI(parameters["parameters"]["ollama_host_url"] + "/api/generate")
+    uri = URI(ollama_url + "/api/generate")
 
     begin
       req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
       req.body = {
-        model: parameters["parameters"]["generate_model_name"], # ou o modelo que tiver lá
+        model: llm_model, # ou o modelo que tiver lá
         prompt: "Você é um assistente técnico. Resuma de forma muito curta e direta o status atual e os pontos principais deste histórico de tarefa, use bullet points:\n\n#{text_to_analyze}",
         stream: false
       }.to_json
@@ -43,6 +48,5 @@ class LocalAiSummarizeController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Tarefa não encontrada" }, status: 404
   end
-
 
 end

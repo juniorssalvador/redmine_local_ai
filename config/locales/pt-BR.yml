@@ -7,6 +7,11 @@ pt-BR:
   msg_i_calculating_distance: "Calculando distância semântica na rede local..."
   msg_i_analysing_local_history: "Analisando histórico local"
 
+  msg_i_ollama_address_helper_settings: "O endereço IP e a porta da máquina onde o serviço do Ollama está rodando na rede local."
+  msg_i_settings_recommend_models: "Modelo focado em busca semântica. Recomendado:"
+  msg_i_exemple: "Exemplo"
+
   msg_e_connection_error: "Erro ao conectar com o servidor de IA local."
   msg_e_process_semantic_search: "Erro ao processar busca semântica no servidor local."
   msg_e_erro_plugin: "Erro no Plugin Local AI"
+

@@ -6,6 +6,9 @@ en:
 
   msg_i_semelhante_case: "Similar cases identified by context in local history:"
   msg_i_calculating_distance: "Calculating semantic distance on the local network..."
+  msg_i_ollama_address_helper_settings: "The IP address and port of the machine where the Ollama service is running on the local network."
+  msg_i_settings_recommend_models: "Model focused on semantic search. Recommended:"
+  msg_i_exemple: "Example"
 
   msg_e_connection_error: "Error connecting to the local AI server."
   msg_e_process_semantic_search: "Error processing semantic search on the local server."

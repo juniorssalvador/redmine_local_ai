@@ -1,0 +1,28 @@
+<div class="box tabular">
+  <p>
+    <label for="settings_ollama_url">URL do Servidor Ollama:</label>
+    <%= text_field_tag 'settings[ollama_url]', settings['ollama_url'], size: 40, placeholder: "http://192.168.X.X:11434" %>
+    <small style="color: #666; margin-left: 10px;"><%= l(:msg_i_ollama_address_helper_settings) %></small>
+    <br/>
+
+  </p>
+
+  <p>
+    <label for="settings_llm_model">Modelo para Resumos (LLM):</label>
+    <%= text_field_tag 'settings[llm_model]', settings['llm_model'], size: 20 %>
+
+    <small style="color: #666; margin-left: 10px;"><%= l(:msg_i_exemple) %>: <code>llama3.1</code>,
+      <code>mistral</code> ou
+      <code>qwen2.5</code>.</small>
+    <br/>
+  </p>
+
+  <p>
+    <label for="settings_embedding_model">Modelo de Vetores (Embeddings):</label>
+    <%= text_field_tag 'settings[embedding_model]', settings['embedding_model'], size: 20 %>
+
+    <small style="color: #666; margin-left: 10px;"><%= l(:msg_i_settings_recommend_models) %>
+      <code>nomic-embed-text</code>.</small>
+    <br/>
+  </p>
+</div>
