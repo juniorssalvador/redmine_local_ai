@@ -1,5 +1,0 @@
-parameters:
-  resume_model_name: "blueishai/anant-base:q8"
-  vectoring_model_name: "nomic-embed-text"
-  generate_model_name: "blueishai/anant-base:q8"
-  ollama_host_url: "http://ollama.home.lab:11434"

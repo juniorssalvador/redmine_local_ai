@@ -1,5 +1,6 @@
 require_dependency File.expand_path('../lib/hooks', __FILE__)
 require 'yaml'
+require_relative 'app/helpers/setup_ssl'
 
 Redmine::Plugin.register :redmine_local_ai do
   name 'Redmine Local Ai plugin'
@@ -10,7 +11,7 @@ Redmine::Plugin.register :redmine_local_ai do
   author_url 'https://github.com/juniorssalvador/redmine_local_ai'
 
   settings default: {
-    'ollama_url' => 'http://127.0.0.1:11434',
+    'ollama_url' => 'http://ollama.home.lab',
     'llm_model' => 'llama3.1',
     'embedding_model' => 'nomic-embed-text'
   }, partial: 'settings/local_ai_settings'
@@ -23,7 +24,6 @@ Redmine::Plugin.register :redmine_local_ai do
 end
 
 # Preparando o patch para o modelo Issue
-
 Issue.class_eval do
   after_save :generate_ai_embedding
 
@@ -37,24 +37,21 @@ Issue.class_eval do
     ollama_url = plugin_settings['ollama_url'].presence || 'http://127.0.0.1:11434'
     embed_model = plugin_settings['embedding_model'].presence || 'nomic-embed-text'
 
-    # load information from file config
-    parameters = YAML.load_file(File.expand_path(File.dirname(__FILE__) + "/parameters.yaml"))
-
     # Executa em segundo plano para não travar a interface web do usuário
     Thread.new do
 
       begin
-        content = "Título: #{self.subject}. Descrição: #{self.description}"
 
-        # IP da sua máquina com Ollama (Altere para o IP real da sua rede)
+        content = "Título: #{self.subject}. Descrição: #{self.description}"
         uri = URI(ollama_url + "/api/embeddings")
+
+        net_http_start = SetupSSL.new.setup_http(uri)
 
         req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
         req.body = { model: embed_model, prompt: content }.to_json
 
-        res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-          http.request(req)
-        end
+        res = net_http_start.request(req)
+        p res.body
 
         embedding_vector = JSON.parse(res.body)['embedding']
 
@@ -63,6 +60,7 @@ Issue.class_eval do
         record = IssueEmbedding.find_or_initialize_by(issue_id: self.id)
         record.ia_model_name = embed_model
         record.embedding_data = embedding_vector # O Rails serializa em JSON automaticamente
+
         record.save!
 
       rescue => e

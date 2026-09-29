@@ -1,3 +1,5 @@
+require_relative '../helpers/setup_ssl'
+
 class LocalAiSummarizeController < ApplicationController
   before_action :find_issue
 
@@ -7,7 +9,6 @@ class LocalAiSummarizeController < ApplicationController
     ollama_url = plugin_settings['ollama_url'].presence || 'http://127.0.0.1:11434'
     llm_model = plugin_settings['llm_model'].presence || 'nomic-embed-text'
 
-    parameters = YAML.load_file(File.expand_path(File.dirname(__FILE__) + "../../../parameters.yaml"))
     # 1. Coleta a descrição da tarefa
     text_to_analyze = "Descrição: #{@issue.description}\n"
 
@@ -16,11 +17,13 @@ class LocalAiSummarizeController < ApplicationController
       if journal.notes.present?
         text_to_analyze += "Comentário: #{journal.notes}\n"
       end
+
     end
 
     # 3. Faz a requisição HTTP para a máquina do Ollama na sua rede local
     # Altere o IP abaixo para o IP real da sua máquina com Ollama
     uri = URI(ollama_url + "/api/generate")
+    net_http_start = SetupSSL.new.setup_http(uri)
 
     begin
       req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
@@ -30,10 +33,7 @@ class LocalAiSummarizeController < ApplicationController
         stream: false
       }.to_json
 
-      res = Net::HTTP.start(uri.hostname, uri.port, read_timeout: 60) do |http|
-        http.request(req)
-      end
-
+      res = net_http_start.request(req)
       ai_response = JSON.parse(res.body)['response']
 
       # Renderiza a resposta em formato JSON para o jQuery do frontend ler
